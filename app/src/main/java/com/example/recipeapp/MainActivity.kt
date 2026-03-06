@@ -4,14 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipeapp.ui.theme.RecipeAppTheme
+import com.example.recipeapp.util.Result
+import com.example.recipeapp.viewmodel.MealViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,29 +23,45 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RecipeAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+//                val viewModel: MealViewModel = viewModel()
+//
+//                LaunchedEffect(Unit) {
+//                    viewModel.searchMeals("")
+//                }
+//
+//                when (val state = viewModel.mealsState) {
+//                    is Result.Loading -> {
+//                        Box(modifier = Modifier.fillMaxSize()) {
+//                            CircularProgressIndicator(
+//                                modifier = Modifier.align(Alignment.Center)
+//                            )
+//                        }
+//                    }
+//                    is Result.Error -> {
+//                        Column(
+//                            modifier = Modifier.fillMaxSize(),
+//                            horizontalAlignment = Alignment.CenterHorizontally,
+//                            verticalArrangement = Arrangement.Center
+//                        ) {
+//                            Text(text = state.message)
+//                            Spacer(modifier = Modifier.height(16.dp))
+//                            Button(onClick = { viewModel.searchMeals("") }) {
+//                                Text("Réessayer")
+//                            }
+//                        }
+//                    }
+//                    is Result.Success -> {
+//                        LazyColumn {
+//                            items(state.data) { meal ->
+//                                Text(
+//                                    text = meal.title,
+//                                    modifier = Modifier.padding(16.dp)
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RecipeAppTheme {
-        Greeting("Android")
     }
 }
