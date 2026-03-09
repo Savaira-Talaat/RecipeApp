@@ -22,4 +22,7 @@ interface MealApiService {
     suspend fun getMealsByCategory(
         @Query("c") category: String
     ) : MealListResponse
+
+    @GET("random.php")
+    suspend fun getRandomMeal(): MealListResponse
 }

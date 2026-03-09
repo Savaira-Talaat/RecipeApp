@@ -44,4 +44,14 @@ class MealRepository {
             Result.Error("Pas de connexion. Vérifez votre réeau")
         }
     }
+
+    suspend fun getRandomMeal(): Result<Meal> {
+        return try {
+            val response = api.getRandomMeal()
+            val meal = response.meals?.firstOrNull() ?: return Result.Error("Aucune recette trouvée.")
+            Result.Success(meal)
+        } catch (e: Exception) {
+            Result.Error("Erreur lors de la récupération d'une recette aléatoire.")
+        }
+    }
 }
