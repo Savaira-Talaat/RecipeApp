@@ -6,8 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.recipeapp.ui.theme.RecipeAppTheme
-import com.example.recipeapp.view.activity.DetailActivity
-import com.example.recipeapp.view.screen.RecipeAppScreen
+import com.example.recipeapp.activity.DetailActivity
+import com.example.recipeapp.ui.screen.RecipeAppScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

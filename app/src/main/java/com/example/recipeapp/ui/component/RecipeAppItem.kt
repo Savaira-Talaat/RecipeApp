@@ -1,4 +1,4 @@
-package com.example.recipeapp.view.component
+package com.example.recipeapp.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

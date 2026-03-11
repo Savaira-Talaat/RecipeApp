@@ -65,7 +65,6 @@ class MealViewModel : ViewModel() {
             if (newMeals.isNotEmpty()) {
                 val existingIds = currentMealsList.map { it.id }.toSet()
                 val uniqueNewMeals = newMeals.filter { it.id !in existingIds }
-                
                 currentMealsList.addAll(uniqueNewMeals)
                 mealsState = Result.Success(currentMealsList.toList())
             } else if (currentMealsList.isEmpty()) {

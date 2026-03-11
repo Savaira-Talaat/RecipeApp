@@ -1,4 +1,4 @@
-package com.example.recipeapp.view.screen
+package com.example.recipeapp.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +46,7 @@ import com.example.recipeapp.model.Meal
 import com.example.recipeapp.ui.theme.Purple40
 import com.example.recipeapp.ui.theme.RecipeAppTheme
 import com.example.recipeapp.util.Result
-import com.example.recipeapp.view.component.MealItem
+import com.example.recipeapp.ui.component.MealItem
 import com.example.recipeapp.viewmodel.MealViewModel
 
 @Composable
