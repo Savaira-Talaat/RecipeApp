@@ -23,6 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.RecipeAppActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.DetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

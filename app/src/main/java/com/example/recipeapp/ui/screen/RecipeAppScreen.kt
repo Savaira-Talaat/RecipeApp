@@ -66,9 +66,9 @@ fun RecipeAppScreen(
     RecipeAppContent(
         mealsState = mealsState,
         isLoadingMore = isLoadingMore,
-        onSearch = { query -> 
-            if (query.isEmpty()) mealViewModel.loadRandomMeals() 
-            else mealViewModel.searchMeals(query) 
+        onSearch = { query ->
+            if (query.isEmpty()) mealViewModel.loadRandomMeals()
+            else mealViewModel.searchMeals(query)
         },
         onRefresh = { mealViewModel.loadRandomMeals() },
         onLoadMore = { mealViewModel.loadRandomMeals(clear = false) },
@@ -196,7 +196,7 @@ fun RecipeAppContent(
                                 onMealClick(meal.id)
                             }
                         }
-                        
+
                         // Indicateur de chargement en bas de la grille
                         if (isLoadingMore) {
                             item(span = { GridItemSpan(2) }) {
