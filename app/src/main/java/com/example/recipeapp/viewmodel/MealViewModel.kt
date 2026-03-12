@@ -32,10 +32,34 @@ class MealViewModel : ViewModel() {
     var isLoadingMore by mutableStateOf(false)
         private set
 
+    // Catégorie active (null = aucun filtre)
+    var selectedCategory by mutableStateOf<String?>(null)
+        private set
+
+    // Charge les catégories au démarrage
+    init {
+        viewModelScope.launch {
+            categoriesState = repository.getCategories()
+        }
+    }
+
+    // Sélectionne ou désélectionne une catégorie
+    fun toggleCategoryFilter(category: String) {
+        if (selectedCategory == category) {
+            selectedCategory = null
+            loadRandomMeals()
+        } else {
+            selectedCategory = category
+            loadMealsByCategory(category)
+        }
+    }
+
     fun searchMeals(query: String = "") {
+        // Recherche texte = reset filtre catégorie
+        selectedCategory = null
         mealsState = Result.Loading
         viewModelScope.launch {
-            delay(500) // Assurer que le chargement reste visible au moins 0.5s
+            delay(500)
             val result = repository.searchMeals(query)
             if (result is Result.Success) {
                 currentMealsList = result.data.toMutableList()
@@ -49,19 +73,20 @@ class MealViewModel : ViewModel() {
             mealsState = Result.Loading
             currentMealsList.clear()
         } else {
-            if (isLoadingMore) return
+            // Bloque le scroll infini si filtre actif
+            if (isLoadingMore || selectedCategory != null) return
             isLoadingMore = true
         }
-        
+
         viewModelScope.launch {
-            delay(500) // Assurer que le chargement reste visible au moins 0.5s
+            delay(500)
             val deferredMeals = (1..count).map {
                 async { repository.getRandomMeal() }
             }
-            
+
             val results = deferredMeals.awaitAll()
             val newMeals = results.filterIsInstance<Result.Success<Meal>>().map { it.data }
-            
+
             if (newMeals.isNotEmpty()) {
                 val existingIds = currentMealsList.map { it.id }.toSet()
                 val uniqueNewMeals = newMeals.filter { it.id !in existingIds }
@@ -83,6 +108,8 @@ class MealViewModel : ViewModel() {
 
     fun loadMealsByCategory(category: String) {
         mealsState = Result.Loading
+        // Vide la liste avant nouveau filtre
+        currentMealsList.clear()
         viewModelScope.launch {
             mealsState = repository.getMealsByCategory(category)
         }
