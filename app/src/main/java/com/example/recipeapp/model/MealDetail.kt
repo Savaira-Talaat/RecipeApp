@@ -7,6 +7,8 @@ data class MealDetail (
     val id:String,
     @SerializedName("strMeal")
     val title: String,
+    @SerializedName("strMealThumb")
+    val imageUrl: String?,
     @SerializedName("strCategory")
     val category: String?,
     @SerializedName("strArea")
