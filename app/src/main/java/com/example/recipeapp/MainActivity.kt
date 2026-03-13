@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import com.example.recipeapp.activity.RecipeAppActivity
+import com.example.recipeapp.data.local.AppDatabase
 import com.example.recipeapp.data.repository.MealRepository
 import com.example.recipeapp.ui.screen.SplashScreen
 import com.example.recipeapp.ui.theme.RecipeAppTheme
@@ -20,6 +21,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // modifLocal : initialise la BDD au démarrage
+        AppDatabase.init(application)
 
         setContent {
             RecipeAppTheme {

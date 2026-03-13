@@ -32,18 +32,20 @@ class MealViewModel : ViewModel() {
     var isLoadingMore by mutableStateOf(false)
         private set
 
-    // Catégorie active (null = aucun filtre)
     var selectedCategory by mutableStateOf<String?>(null)
         private set
 
-    // Charge les catégories au démarrage
     init {
         viewModelScope.launch {
-            categoriesState = repository.getCategories()
+            // modifLocal : rafraîchit catégories si cache expiré
+            if (!repository.isCategoryCacheValid()) {
+                categoriesState = repository.getCategories()
+            } else {
+                categoriesState = repository.getCategories()
+            }
         }
     }
 
-    // Sélectionne ou désélectionne une catégorie
     fun toggleCategoryFilter(category: String) {
         if (selectedCategory == category) {
             selectedCategory = null
@@ -55,7 +57,6 @@ class MealViewModel : ViewModel() {
     }
 
     fun searchMeals(query: String = "") {
-        // Recherche texte = reset filtre catégorie
         selectedCategory = null
         mealsState = Result.Loading
         viewModelScope.launch {
@@ -73,13 +74,27 @@ class MealViewModel : ViewModel() {
             mealsState = Result.Loading
             currentMealsList.clear()
         } else {
-            // Bloque le scroll infini si filtre actif
             if (isLoadingMore || selectedCategory != null) return
             isLoadingMore = true
         }
 
         viewModelScope.launch {
             delay(500)
+            // modifLocal : charge depuis le cache par blocs de 10
+            if (repository.isMealCacheValid()) {
+                val cached = repository.getCachedMeals()
+                if (cached.isNotEmpty()) {
+                    val existingIds = currentMealsList.map { it.id }.toSet()
+                    val newMeals = cached.filter { it.id !in existingIds }.take(count)
+                    if (newMeals.isNotEmpty()) {
+                        currentMealsList.addAll(newMeals)
+                        mealsState = Result.Success(currentMealsList.toList())
+                        isLoadingMore = false
+                        return@launch
+                    }
+                }
+            }
+
             val deferredMeals = (1..count).map {
                 async { repository.getRandomMeal() }
             }
@@ -93,7 +108,14 @@ class MealViewModel : ViewModel() {
                 currentMealsList.addAll(uniqueNewMeals)
                 mealsState = Result.Success(currentMealsList.toList())
             } else if (currentMealsList.isEmpty()) {
-                mealsState = Result.Error("Erreur lors du chargement des recettes.")
+                // modifLocal : fallback cache si chargement échoue
+                val cached = repository.getCachedMeals()
+                if (cached.isNotEmpty()) {
+                    currentMealsList.addAll(cached)
+                    mealsState = Result.Success(currentMealsList.toList())
+                } else {
+                    mealsState = Result.Error("Erreur lors du chargement des recettes.")
+                }
             }
             isLoadingMore = false
         }
@@ -108,7 +130,6 @@ class MealViewModel : ViewModel() {
 
     fun loadMealsByCategory(category: String) {
         mealsState = Result.Loading
-        // Vide la liste avant nouveau filtre
         currentMealsList.clear()
         viewModelScope.launch {
             mealsState = repository.getMealsByCategory(category)
